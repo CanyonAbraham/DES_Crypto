@@ -366,11 +366,10 @@ def print_bin(bin_arr):
     print()
 
 
-def des(file_name):
+def des(num_rounds, key, message):
     '''
         converts message in input file using DES
     '''
-    num_rounds, key, message = get_info(file_name)
 
     bin_key = hex_to_bin(key, 64)
     message = hex_to_bin(message, 64)
@@ -431,26 +430,49 @@ def output_message(final_message, file_output, file_num):
     with open(file_output + str(file_num), 'w') as output_file:
         output_file.write(bin_to_hex(final_message))
 
+def arr_to_str(arr):
+    str1 = ""
+    for elem in arr:
+        str1 += str(elem)
+    return str1
 
 if __name__ == "__main__":
-    # ouput from class input
-    output_message(des("class_input_1.txt"), "Faludi_output_", 1)
-    output_message(des("class_input_2.txt"), "Faludi_output_", 2)
-    output_message(des("class_input_3.txt"), "Faludi_output_", 3)
-
-    # output from user made input
-    output_message(des("user_input_1.txt"), "Faludi_user_output_", 1)
-
     # output from generated input
     num_rounds = 16
     key = "0123456789abcdef"
-    for idx in range(1000):
+    key_1 = "0123456789abcdf0"
+    encryption_result_list = []
+    bits_changed_list = []
+    num_encryptions = 100
+    for idx in range(num_encryptions):
         message = hex(random.randrange(0, 18446744073709551615))
-        with open("generated_input_" + str(idx) + ".", 'w') as generated_file:
-            generated_file.write(str(num_rounds) + "\n")
-            generated_file.write(key + "\n")
-            generated_file.write(str(message)[2:] + "\n")
-        output_message(des("generated_input_" + str(idx)), "Faludi_generated_output_", idx + 1)
+
+        encryption_list = []
+        encryption_list.append(num_rounds)
+        encryption_list.append(key)
+        encryption_list.append(message)
+        encryption_list.append(arr_to_str(des(num_rounds, key, message)))
+        encryption_list.append(arr_to_str(des(num_rounds, key_1, message)))
 
 
+        encryption_result_list.append(encryption_list)
 
+    for encryption in encryption_result_list:
+        #print("num_rounds: " + str(encryption[0]))
+        #print("key: " + str(encryption[1]))
+        #print("message: " + str(encryption[2]))
+        #print("encryption:   " + str(encryption[3]))
+        #print("encryption_1: " + str(encryption[4]))
+
+        xor_res = int(encryption[3], 2) ^ int(encryption[4], 2)
+        xor_res = '{0:064b}'.format(xor_res)
+        bits_changed_list.append(xor_res.count('1'))
+        #print("              " + xor_res)
+        #print("number of bits changed:", xor_res.count('1'))
+    avg = 0
+    for i in bits_changed_list:
+        avg += i
+        print(i)
+
+    avg /= num_encryptions
+    print("avg:",avg)
