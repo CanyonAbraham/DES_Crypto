@@ -375,7 +375,7 @@ def des(num_rounds, key, message, false_funct):
     message = hex_to_bin(message, 64)
 
     # applies initial permutation table to message
-    if false_funct != 1:
+    if false_funct != "Initial Message Permutation":
         initial_permutation_message = get_initial_permutation_list(message)
     else:
         initial_permutation_message = message
@@ -391,7 +391,7 @@ def des(num_rounds, key, message, false_funct):
     for round_number in range(num_rounds):
         # splits the key in half and shifts each half left by amount
         # given by DES based on what round number the code is on
-        if false_funct != 2:
+        if false_funct != "Shift Key Left":
             bin_56_l_key = shift_key_left(bin_56_key[0:28], round_number)
             bin_56_r_key = shift_key_left(bin_56_key[28:56], round_number)
             bin_56_key = bin_56_l_key + bin_56_r_key
@@ -409,38 +409,38 @@ def des(num_rounds, key, message, false_funct):
         xored_expanded_message_list = xor_bin_lists(bin_48_key, r_message)
 
         # applies substitution tables to the sum of the key and message
-        if false_funct != 3:
+        if false_funct != "Substituted Message":
             substituted_list = get_substituted_message_list(xored_expanded_message_list)
         else:
             substituted_list = r_message
 
         # applies permutation table to substitution list
-        if false_funct != 4:
+        if false_funct != "Permutation Message":
             permutated_list = get_permutation_message_list(substituted_list)
         else:
             permutated_list = substituted_list
 
         # saves the value of the sum of the left half of the message list and
         # the permutated list to the right half of the message
-        if false_funct != 5:
+        if false_funct != "XOR":
             temp_message = xor_bin_lists(l_message, permutated_list)
         else:
             temp_message = l_message
 
         # saves the value of the old right half of the message to the
         # left half of the message
-        if false_funct != 6:
+        if false_funct != "Switching Message Halves":
             r_message = temp_message
             l_message = temp_l_message
         else:
             l_message = temp_message
 
-    if false_funct != 6:
+    if false_funct != "Switching Message Halves":
         final_message = r_message + l_message
     else:
         final_message = l_message + r_message
 
-    if false_funct != 7:
+    if false_funct != "Final Message Permutation":
         final_message = get_final_permutation_list(final_message)
 
     return final_message
@@ -466,7 +466,9 @@ if __name__ == "__main__":
     key = "0123456789abcdef"
     key_1 = "0123456789abcdf0"
     num_encryptions = 100
-    for funct in range(1,8):
+    functions = ["", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
+                 "Permutation Message", "XOR", "Switching Messsage Halves", "Final Message Permutation"]
+    for funct in functions:
         encryption_result_list = []
         bits_changed_list = []
         for idx in range(num_encryptions):
@@ -498,11 +500,14 @@ if __name__ == "__main__":
         for i in bits_changed_list:
             avg += i
 
-        temp = 0
-        for idx in bits_changed_list:
-            print(idx, end = " ")
-            temp += 1
-        print()
+        #temp = 0
+        #for idx in bits_changed_list:
+            #print(idx, end = " ")
+            #temp += 1
+        #print()
 
         avg /= num_encryptions
-        print("avg", funct, ":",avg)
+        if funct == "":
+            print("avg bits changed: " + str(avg))
+        else:
+            print("avg bits changed w/o " + funct + ": " + str(avg))
