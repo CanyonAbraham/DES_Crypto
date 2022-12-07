@@ -366,7 +366,7 @@ def print_bin(bin_arr):
     print()
 
 
-def des(num_rounds, key, message, false_funct):
+def des(num_rounds, key, message, false_funct, encryption):
     '''
         converts message in input file using DES
     '''
@@ -382,7 +382,7 @@ def des(num_rounds, key, message, false_funct):
 
     # applies permutation table 1 to key
     bin_56_key = get_permuted_choice_1_key(bin_key)
-
+    bin_56_keys = []
     # splits message in two
     l_message = initial_permutation_message[0:len(initial_permutation_message) // 2]
     r_message = initial_permutation_message[len(initial_permutation_message) // 2:]
@@ -395,6 +395,12 @@ def des(num_rounds, key, message, false_funct):
             bin_56_l_key = shift_key_left(bin_56_key[0:28], round_number)
             bin_56_r_key = shift_key_left(bin_56_key[28:56], round_number)
             bin_56_key = bin_56_l_key + bin_56_r_key
+            bin_56_keys.append(bin_56_key)
+
+    if not encryption:
+        bin_56_keys = bin_56_keys[::-1]
+
+    for round_number in range(num_rounds):
 
         # makes a new list and copies the values of r_message into it
         temp_l_message = r_message[:]
@@ -403,7 +409,7 @@ def des(num_rounds, key, message, false_funct):
         r_message = get_expanded_message_list(r_message)
 
         # applies permutation table 2 to key
-        bin_48_key = get_permuted_choice_2_key(bin_56_key)
+        bin_48_key = get_permuted_choice_2_key(bin_56_keys[round_number])
 
         # xores the key and message and saves result
         xored_expanded_message_list = xor_bin_lists(bin_48_key, r_message)
@@ -472,16 +478,16 @@ if __name__ == "__main__":
         encryption_result_list = []
         bits_changed_list = []
         for idx in range(num_encryptions):
-            message = hex(random.randrange(0, 18446744073709551615))
+            #message = hex(random.randrange(0, 18446744073709551615))
+            message = hex(0x0123456789abcdef)
 
             encryption_list = []
             #encryption_list.append(num_rounds)
             #encryption_list.append(key)
             #encryption_list.append(message)
 
-            encryption_list.append(arr_to_str(des(num_rounds, key, message, funct)))
-            encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct)))
-
+            encryption_list.append(arr_to_str(des(num_rounds, key, message, funct, True)))
+            encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct, True)))
 
             encryption_result_list.append(encryption_list)
 
