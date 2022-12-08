@@ -389,13 +389,15 @@ def des(num_rounds, key, message, false_funct, encryption):
     r_message = initial_permutation_message[len(initial_permutation_message) // 2:]
 
     # loops through DES for number of rounds specified in input file
-    for round_number in range(num_rounds):
+    for key_round_number in range(num_rounds):
         # splits the key in half and shifts each half left by amount
         # given by DES based on what round number the code is on
         if false_funct != "Shift Key Left":
-            bin_56_l_key = shift_key_left(bin_56_key[0:28], round_number)
-            bin_56_r_key = shift_key_left(bin_56_key[28:56], round_number)
+            bin_56_l_key = shift_key_left(bin_56_key[0:28], key_round_number)
+            bin_56_r_key = shift_key_left(bin_56_key[28:56], key_round_number)
             bin_56_key = bin_56_l_key + bin_56_r_key
+            bin_56_keys.append(bin_56_key)
+        else:
             bin_56_keys.append(bin_56_key)
 
     if not encryption:
