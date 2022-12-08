@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import time
 
 
 def generate_keys():
@@ -375,7 +376,7 @@ def des(num_rounds, key, message, false_funct, encryption):
     message = hex_to_bin(message, 64)
 
     # applies initial permutation table to message
-    if false_funct != "Initial Message Permutation":
+    if False: #false_funct != "Initial Message Permutation":
         initial_permutation_message = get_initial_permutation_list(message)
     else:
         initial_permutation_message = message
@@ -441,12 +442,12 @@ def des(num_rounds, key, message, false_funct, encryption):
         else:
             l_message = temp_message
 
-    if false_funct != "Switching Message Halves":
+    if False: #false_funct != "Switching Message Halves":
         final_message = r_message + l_message
     else:
         final_message = l_message + r_message
 
-    if false_funct != "Final Message Permutation":
+    if False: #false_funct != "Final Message Permutation":
         final_message = get_final_permutation_list(final_message)
 
     return final_message
@@ -471,15 +472,15 @@ if __name__ == "__main__":
     num_rounds = 16
     key = "0123456789abcdef"
     key_1 = "0123456789abcdf0"
-    num_encryptions = 100
+    num_encryptions = 1000
     functions = ["", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
                  "Permutation Message", "XOR", "Switching Messsage Halves", "Final Message Permutation"]
     for funct in functions:
         encryption_result_list = []
         bits_changed_list = []
         for idx in range(num_encryptions):
-            #message = hex(random.randrange(0, 18446744073709551615))
-            message = hex(0x0123456789abcdef)
+            message = hex(random.randrange(0, 18446744073709551615))
+            message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
 
             encryption_list = []
             #encryption_list.append(num_rounds)
@@ -490,6 +491,20 @@ if __name__ == "__main__":
             encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct, True)))
 
             encryption_result_list.append(encryption_list)
+            #avg_count = 0
+            #for ro in range (num_encryptions):
+                #count = 0
+                #for temp in range (64):
+
+                    #message = hex(random.randrange(0, 18446744073709551615))
+                    #message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
+                    #res = (bin_to_hex(arr_to_str(xor_bin_lists(des(2, key, message, "", True), des(2, key, message2, "", True)))))
+                    #if res == hex(0x00000000060000000):
+                        #count += 1
+                #avg_count += count
+            #avg_count /= num_encryptions
+            #print(avg_count)
+            #quit()
 
         for encryption in encryption_result_list:
             #print("num_rounds: " + str(encryption[0]))
