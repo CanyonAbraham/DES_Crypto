@@ -421,7 +421,7 @@ def des(num_rounds, key, message, false_funct, encryption):
         if false_funct != "Substituted Message":
             substituted_list = get_substituted_message_list(xored_expanded_message_list)
         else:
-            substituted_list = r_message
+            substituted_list = xored_expanded_message_list
 
         # applies permutation table to substitution list
         if false_funct != "Permutation Message":
@@ -431,10 +431,7 @@ def des(num_rounds, key, message, false_funct, encryption):
 
         # saves the value of the sum of the left half of the message list and
         # the permutated list to the right half of the message
-        if false_funct != "XOR":
-            temp_message = xor_bin_lists(l_message, permutated_list)
-        else:
-            temp_message = l_message
+        temp_message = xor_bin_lists(l_message, permutated_list)
 
         # saves the value of the old right half of the message to the
         # left half of the message
@@ -476,7 +473,7 @@ if __name__ == "__main__":
     key_1 = "0123456789abcdf0"
     num_encryptions = 1000
     functions = ["", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
-                 "Permutation Message", "XOR", "Switching Messsage Halves", "Final Message Permutation"]
+                 "Permutation Message", "Switching Messsage Halves", "Final Message Permutation"]
     for funct in functions:
         encryption_result_list = []
         bits_changed_list = []
