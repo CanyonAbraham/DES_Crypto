@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import time
+import matplotlib.pyplot as plt
 
 
 def generate_keys():
@@ -472,8 +473,12 @@ if __name__ == "__main__":
     key = "0123456789abcdef"
     key_1 = "0123456789abcdf0"
     num_encryptions = 1000
-    functions = ["", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
+    functions = ["None", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
                  "Permutation Message", "Switching Messsage Halves", "Final Message Permutation"]
+
+    avg_changed_bits = []
+    avg_times = []
+
     for funct_idx, funct in enumerate(functions):
         encryption_result_list = []
         bits_changed_list = []
@@ -524,9 +529,9 @@ if __name__ == "__main__":
             bits_changed_list.append(xor_res.count('1'))
             #print("              " + xor_res)
             #print("number of bits changed:", xor_res.count('1'))
-        avg = 0
+        bit_changed_avg = 0
         for i in bits_changed_list:
-            avg += i
+            bit_changed_avg += i
 
         #temp = 0
         #for idx in bits_changed_list:
@@ -534,18 +539,39 @@ if __name__ == "__main__":
             #temp += 1
         #print()
 
-        avg /= num_encryptions
-        if funct == "":
-            print("avg bits changed: " + str(avg))
+        bit_changed_avg /= num_encryptions
+        if funct == "None":
+            print("avg bits changed: " + str(bit_changed_avg))
         else:
-            print("avg bits changed w/o " + funct + ": " + str(avg))
+            print("avg bits changed w/o " + funct + ": " + str(bit_changed_avg))
+
+        avg_changed_bits.append(bit_changed_avg)
 
         time_avg = 0
         for funct_time in timer_res:
             time_avg += funct_time
         time_avg /= num_encryptions
 
-        if funct == "":
-            print("time for encryption: " + str(time_avg * 1000) + " ms")
-        else:
-            print("time for encryption w/o " + funct + ": " + str(time_avg * 1000) + " ms")
+        #if funct == "None":
+            #print("time for encryption: " + str(time_avg * 1000) + " ms")
+        #else:
+            #print("time for encryption w/o " + funct + ": " + str(time_avg * 1000) + " ms")
+
+        avg_times.append(time_avg * 1000)
+
+    show_bits_changed = False
+    if show_bits_changed == True:
+        fig = plt.figure(figsize = (10, 10))
+        plt.bar(functions, avg_changed_bits, color="blue", width = 0.4)
+        plt.xlabel("Functions Removed")
+        plt.ylabel("Average Number of Bits Changed By Changing One Bit In The Key")
+        plt.title("Average Number of Bits Changed By Changing One Bit In The Key With Functions Removed")
+        plt.show()
+
+    else:
+        fig = plt.figure(figsize = (10, 10))
+        plt.bar(functions, avg_times, color="blue", width = 0.4)
+        plt.xlabel("Functions Removed")
+        plt.ylabel("Average Time of Encryption (ms)")
+        plt.title("Average Time Taken By DES To Encode With Functions Removed")
+        plt.show()
