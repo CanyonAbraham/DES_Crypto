@@ -377,10 +377,7 @@ def des(num_rounds, key, message, false_funct, encryption):
     message = hex_to_bin(message, 64)
 
     # applies initial permutation table to message
-    if False: #false_funct != "Initial Message Permutation":
-        initial_permutation_message = get_initial_permutation_list(message)
-    else:
-        initial_permutation_message = message
+    initial_permutation_message = get_initial_permutation_list(message)
 
     # applies permutation table 1 to key
     bin_56_key = get_permuted_choice_1_key(bin_key)
@@ -442,13 +439,12 @@ def des(num_rounds, key, message, false_funct, encryption):
         else:
             l_message = temp_message
 
-    if False: #false_funct != "Switching Message Halves":
+    if false_funct != "Switching Message Halves":
         final_message = r_message + l_message
     else:
         final_message = l_message + r_message
 
-    if False: #false_funct != "Final Message Permutation":
-        final_message = get_final_permutation_list(final_message)
+    final_message = get_final_permutation_list(final_message)
 
     return final_message
 
@@ -558,6 +554,7 @@ if __name__ == "__main__":
             #print("time for encryption w/o " + funct + ": " + str(time_avg * 1000) + " ms")
 
         avg_times.append(time_avg * (2**32) / 86400)
+        #avg_times.append(time_avg * (2**23) / 86400)
 
     fig = plt.figure(figsize = (10, 10))
 
