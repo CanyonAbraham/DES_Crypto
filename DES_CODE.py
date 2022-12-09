@@ -377,7 +377,10 @@ def des(num_rounds, key, message, false_funct, encryption):
     message = hex_to_bin(message, 64)
 
     # applies initial permutation table to message
-    initial_permutation_message = get_initial_permutation_list(message)
+    if false_funct != "Initial Message Permutation":
+        initial_permutation_message = get_initial_permutation_list(message)
+    else:
+        initial_permutation_message = message
 
     # applies permutation table 1 to key
     bin_56_key = get_permuted_choice_1_key(bin_key)
@@ -444,7 +447,8 @@ def des(num_rounds, key, message, false_funct, encryption):
     else:
         final_message = l_message + r_message
 
-    final_message = get_final_permutation_list(final_message)
+    if false_funct != "Final Message Permutation":
+        final_message = get_final_permutation_list(final_message)
 
     return final_message
 
@@ -468,7 +472,7 @@ if __name__ == "__main__":
     num_rounds = 16
     key = "0123456789abcdef"
     key_1 = "0123456789abcdf0"
-    num_encryptions = 1000
+    num_encryptions = 10000
     functions = ["None", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
                  "Permutation Message", "Switching Messsage Halves", "Final Message Permutation"]
 
@@ -484,9 +488,6 @@ if __name__ == "__main__":
             message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
 
             encryption_list = []
-            #encryption_list.append(num_rounds)
-            #encryption_list.append(key)
-            #encryption_list.append(message)
 
             start = time.time()
 
@@ -499,47 +500,21 @@ if __name__ == "__main__":
             encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct, True)))
 
             encryption_result_list.append(encryption_list)
-            #avg_count = 0
-            #for ro in range (num_encryptions):
-                #count = 0
-                #for temp in range (64):
-
-                    #message = hex(random.randrange(0, 18446744073709551615))
-                    #message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
-                    #res = (bin_to_hex(arr_to_str(xor_bin_lists(des(2, key, message, "", True), des(2, key, message2, "", True)))))
-                    #if res == hex(0x00000000060000000):
-                        #count += 1
-                #avg_count += count
-            #avg_count /= num_encryptions
-            #print(avg_count)
-            #quit()
 
         for encryption in encryption_result_list:
-            #print("num_rounds: " + str(encryption[0]))
-            #print("key: " + str(encryption[1]))
-            #print("message: " + str(encryption[2]))
-            #print("encryption:   " + str(encryption[3]))
-            #print("encryption_1: " + str(encryption[4]))
             xor_res = int(encryption[0], 2) ^ int(encryption[1], 2)
             xor_res = '{0:064b}'.format(xor_res)
             bits_changed_list.append(xor_res.count('1'))
-            #print("              " + xor_res)
-            #print("number of bits changed:", xor_res.count('1'))
+
         bit_changed_avg = 0
         for i in bits_changed_list:
             bit_changed_avg += i
 
-        #temp = 0
-        #for idx in bits_changed_list:
-            #print(idx, end = " ")
-            #temp += 1
-        #print()
-
         bit_changed_avg /= num_encryptions
-        #if funct == "None":
-            #print("avg bits changed: " + str(bit_changed_avg))
-        #else:
-            #print("avg bits changed w/o " + funct + ": " + str(bit_changed_avg))
+        if funct == "None":
+            print("avg bits changed: " + str(bit_changed_avg))
+        else:
+            print("avg bits changed w/o " + funct + ": " + str(bit_changed_avg))
 
         avg_changed_bits.append(bit_changed_avg)
 
@@ -547,11 +522,6 @@ if __name__ == "__main__":
         for funct_time in timer_res:
             time_avg += funct_time
         time_avg /= num_encryptions
-
-        #if funct == "None":
-            #print("time for encryption: " + str(time_avg * 1000) + " ms")
-        #else:
-            #print("time for encryption w/o " + funct + ": " + str(time_avg * 1000) + " ms")
 
         avg_times.append(time_avg * (2**32) / 86400)
         #avg_times.append(time_avg * (2**23) / 86400)
