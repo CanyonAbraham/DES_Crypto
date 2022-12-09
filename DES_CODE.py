@@ -471,7 +471,7 @@ if __name__ == "__main__":
     # output from generated input
     num_rounds = 16
     key = "0123456789abcdef"
-    key_1 = "0123456789abcdf0"
+    #key_1 = "0123456789abcdf0"
     num_encryptions = 10000
     functions = ["None", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
                  "Permutation Message", "Switching Messsage Halves", "Final Message Permutation"]
@@ -485,7 +485,7 @@ if __name__ == "__main__":
         timer_res = []
         for idx in range(num_encryptions):
             message = hex(random.randrange(0, 18446744073709551615))
-            message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
+            message2 = hex(int(message, 16) + 1)
 
             encryption_list = []
 
@@ -497,7 +497,7 @@ if __name__ == "__main__":
 
             timer_res.append(end - start)
 
-            encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct, True)))
+            encryption_list.append(arr_to_str(des(num_rounds, key, message2, funct, True)))
 
             encryption_result_list.append(encryption_list)
 
@@ -531,9 +531,8 @@ if __name__ == "__main__":
     plt.bar(functions, avg_changed_bits, color="blue", width = 0.4)
 
     plt.xlabel("Functions Removed")
-    plt.ylabel("Average Number of Bits Changed By Changing One Bit In The Key")
-    plt.title("Average Number of Bits Changed By Changing One Bit In The Key With Functions Removed")
-
+    plt.ylabel("Average Number of Bits Changed By Changing One Bit In The Message")
+    plt.title("Average Number of Bits Changed By Changing One Bit In The Message With Functions Removed")
 
     fig2 = plt.figure(figsize = (10, 10))
     plt.bar(functions, avg_times, color="blue", width = 0.4)
