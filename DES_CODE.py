@@ -474,9 +474,10 @@ if __name__ == "__main__":
     num_encryptions = 1000
     functions = ["", "Initial Message Permutation", "Shift Key Left", "Substituted Message",
                  "Permutation Message", "Switching Messsage Halves", "Final Message Permutation"]
-    for funct in functions:
+    for funct_idx, funct in enumerate(functions):
         encryption_result_list = []
         bits_changed_list = []
+        timer_res = []
         for idx in range(num_encryptions):
             message = hex(random.randrange(0, 18446744073709551615))
             message2 = bin_to_hex(arr_to_str(xor_bin_lists(hex_to_bin(message, 64), hex_to_bin("0080820060000000", 64))))
@@ -486,7 +487,14 @@ if __name__ == "__main__":
             #encryption_list.append(key)
             #encryption_list.append(message)
 
+            start = time.time()
+
             encryption_list.append(arr_to_str(des(num_rounds, key, message, funct, True)))
+
+            end = time.time()
+
+            timer_res.append(end - start)
+
             encryption_list.append(arr_to_str(des(num_rounds, key_1, message, funct, True)))
 
             encryption_result_list.append(encryption_list)
@@ -531,3 +539,13 @@ if __name__ == "__main__":
             print("avg bits changed: " + str(avg))
         else:
             print("avg bits changed w/o " + funct + ": " + str(avg))
+
+        time_avg = 0
+        for funct_time in timer_res:
+            time_avg += funct_time
+        time_avg /= num_encryptions
+
+        if funct == "":
+            print("time for encryption: " + str(time_avg * 1000) + " ms")
+        else:
+            print("time for encryption w/o " + funct + ": " + str(time_avg * 1000) + " ms")
