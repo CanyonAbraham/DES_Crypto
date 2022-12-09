@@ -540,10 +540,10 @@ if __name__ == "__main__":
         #print()
 
         bit_changed_avg /= num_encryptions
-        if funct == "None":
-            print("avg bits changed: " + str(bit_changed_avg))
-        else:
-            print("avg bits changed w/o " + funct + ": " + str(bit_changed_avg))
+        #if funct == "None":
+            #print("avg bits changed: " + str(bit_changed_avg))
+        #else:
+            #print("avg bits changed w/o " + funct + ": " + str(bit_changed_avg))
 
         avg_changed_bits.append(bit_changed_avg)
 
@@ -559,19 +559,19 @@ if __name__ == "__main__":
 
         avg_times.append(time_avg * 1000)
 
-    show_bits_changed = False
-    if show_bits_changed == True:
-        fig = plt.figure(figsize = (10, 10))
-        plt.bar(functions, avg_changed_bits, color="blue", width = 0.4)
-        plt.xlabel("Functions Removed")
-        plt.ylabel("Average Number of Bits Changed By Changing One Bit In The Key")
-        plt.title("Average Number of Bits Changed By Changing One Bit In The Key With Functions Removed")
-        plt.show()
+    fig = plt.figure(figsize = (10, 10))
 
-    else:
-        fig = plt.figure(figsize = (10, 10))
-        plt.bar(functions, avg_times, color="blue", width = 0.4)
-        plt.xlabel("Functions Removed")
-        plt.ylabel("Average Time of Encryption (ms)")
-        plt.title("Average Time Taken By DES To Encode With Functions Removed")
-        plt.show()
+    plt.bar(functions, avg_changed_bits, color="blue", width = 0.4)
+
+    plt.xlabel("Functions Removed")
+    plt.ylabel("Average Number of Bits Changed By Changing One Bit In The Key")
+    plt.title("Average Number of Bits Changed By Changing One Bit In The Key With Functions Removed")
+
+
+    fig2 = plt.figure(figsize = (10, 10))
+    plt.bar(functions, avg_times, color="blue", width = 0.4)
+
+    plt.xlabel("Functions Removed")
+    plt.ylabel("Average Time of Encryption (ms)")
+    plt.title("Average Time Taken By DES To Encode With Functions Removed")
+    plt.show()
