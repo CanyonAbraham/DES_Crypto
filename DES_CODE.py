@@ -523,8 +523,8 @@ if __name__ == "__main__":
             time_avg += funct_time
         time_avg /= num_encryptions
 
-        avg_times.append(time_avg * (2**32) / 86400)
-        #avg_times.append(time_avg * (2**23) / 86400)
+        #avg_times.append(time_avg * (2**32) / 86400)
+        avg_times.append(time_avg * (2**23) / 3600)
 
     fig = plt.figure(figsize = (10, 10))
 
@@ -538,6 +538,6 @@ if __name__ == "__main__":
     plt.bar(functions, avg_times, color="blue", width = 0.4)
 
     plt.xlabel("Functions Removed")
-    plt.ylabel("Average Time of Decryption (days)")
+    plt.ylabel("Average Time of Decryption (hours)")
     plt.title("Average Time Taken By DES To Encode With Functions Removed")
     plt.show()
