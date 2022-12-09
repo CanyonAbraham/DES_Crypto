@@ -407,7 +407,7 @@ def des(num_rounds, key, message, false_funct, encryption):
     for round_number in range(num_rounds):
 
         # makes a new list and copies the values of r_message into it
-        temp_l_message = r_message[:]
+        temp_r_message = r_message[:]
 
         # applies expantion table to r_data
         r_message = get_expanded_message_list(r_message)
@@ -438,9 +438,9 @@ def des(num_rounds, key, message, false_funct, encryption):
         # left half of the message
         if false_funct != "Switching Message Halves":
             r_message = temp_message
-            l_message = temp_l_message
+            l_message = temp_r_message
         else:
-            l_message = temp_message
+            r_message = temp_message
 
     if false_funct != "Switching Message Halves":
         final_message = r_message + l_message
